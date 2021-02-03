@@ -1,3 +1,7 @@
+/**
+ * Driver class to run the LL1Parser.
+ * @author Alex Smith (alsmi14)
+ */
 public class LL1 {
     public static void main(String[] args) {
         // if (args.length < 1) {
@@ -5,8 +9,8 @@ public class LL1 {
         //     return;
         // }
         // String exp = args[0];
-        String exp = "100.228-(2.45*(5.1-3)-2+3)";  //Valid; 94.083
-        //String exp = "100-((2*(5-3)-2+3)";        //Invalid Expression
+        //String exp = "100.228-(2.45*(5.1-3)-2+3)";  //Valid; 94.083
+        String exp = "100-((2*(5-3)-2+3)";        //Invalid Expression
         String[] gram = {
             "E ::= T E'",
             "E' ::= + T E'", "E' ::= − T E'", "E' ::= λ",
