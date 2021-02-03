@@ -23,7 +23,7 @@ public class LL1 {
         };
         CFG grammar = new CFG(gram);
         Table table = new Table(tab);
-        LL1Parser parser = new LL1Parser();
-        parser.verify(exp);
+        LL1Parser parser = new LL1Parser(grammar, table);
+        parser.verify(exp, "E", "$");
     }
 }
