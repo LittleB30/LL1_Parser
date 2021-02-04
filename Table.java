@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +15,7 @@ public class Table {
      * @param t an array of strings in the form "row column value"
      */
     public Table(String[] t) {
-        table = new HashMap<>();
+        table = new LinkedHashMap<>();
         parseTable(t);
     }
 
@@ -44,10 +44,10 @@ public class Table {
     }
 
     /**
-     * Gets the value in the table stored at (row, column)
+     * Gets the value in the table stored at (row, column).
      * @param row
      * @param col
-     * @return the value in the table stored at (row, column)
+     * @return the value in the table stored at (row, column), null in not present.
      */
     public int get(String row, String column) {
         List<String> temp = new ArrayList<>();

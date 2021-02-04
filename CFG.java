@@ -1,13 +1,12 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * A class defining a Context-Free Grammar (CFG) containing a list of production rules.
  * @author Alex Smith (alsmi14)
  */
 public class CFG {
-    private List<Stack<String>> productionRules;
+    private List<List<String>> productionRules;
 
     /**
      * Constucts a grammar from a given string array.
@@ -25,9 +24,9 @@ public class CFG {
     private void parseGrammar(String[] grammar) {
         for (String rule : grammar) {
             String[] r = rule.split("::=");
-            Stack<String> s = new Stack<>();
+            ArrayList<String> s = new ArrayList<>();
             for (String right : r[1].trim().split("\\s+")) {
-                s.push(right);
+                s.add(right);
             }
             productionRules.add(s);
         }
@@ -38,10 +37,10 @@ public class CFG {
      * @param index
      * @return the rule stored at the specifed index
      */
-    public Stack<String> getRule(int index) {
-        Stack<String> val;
+    public List<String> getRule(int index) {
+        List<String> val;
         try {
-            val = productionRules.get(index);
+            val = new ArrayList<>(productionRules.get(index));
         } catch (IndexOutOfBoundsException e) {
             System.out.println(e.getStackTrace());
             val = null;
