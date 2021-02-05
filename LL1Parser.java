@@ -38,42 +38,11 @@ public class LL1Parser {
         tokens.add(endOfProgram);
 
         // Continue parsing while there are both operations and tokens left
-        while (!operations.isEmpty() && !tokens.isEmpty() && isValid) {
-            String curToken = tokens.peek();
-            String curOp = operations.pop();
-            
-            // Check if the current token is a number
-            boolean isNumber;
-            double num;
-            try {
-                num = Double.parseDouble(curToken);
-                curToken = "n";
-                isNumber = true;
-            } catch (NumberFormatException e) {
-                isNumber = false;
-            }
-
-            // Check if the operation requires removing the token from the string
-            if (Pattern.matches("\\p{Punct}|n", curOp)) {
-                if (curToken.equals(curOp)) {
-                    tokens.poll();
-                } else {
-                    isValid = false;
-                }
-            } else {
-                //apply the rule in the table at (curToken, curOp) by adding it to the operations stack
-                try {
-                    int ruleNum = parseTable.get(curOp, curToken) - 1; // -1 to start from 0
-                    List<String> temp = grammar.getRule(ruleNum);
-                    Collections.reverse(temp); // Reverse for correct stack order
-                    operations.addAll(temp);
-                    if (operations.peek().equals("λ")) operations.pop();
-                } catch (NullPointerException e) {
-                    isValid = false;
-                }
-            }
+        while (!tokens.isEmpty() && !operations.isEmpty() && isValid) {
+            isValid = parse(tokens, operations);
         }
 
+        // Print the conclusion
         if (isValid) {
             System.out.println("Valid");
         } else {
@@ -82,7 +51,7 @@ public class LL1Parser {
     }
     
     /**
-     * Converts an string expression into tokens and adds them to a queue.
+     * Converts a string expression into tokens and adds them to a queue.
      * @param expression the expression to be tokenized
      * @return a queue of token strings from the given expression.
      */
@@ -99,5 +68,42 @@ public class LL1Parser {
         }
 
         return tokens;
+    }
+
+    /**
+     * Parses one iteration from the tokens and operations stacks.
+     * @param tokens the stack of string tokens
+     * @param operations the stack of string operations
+     * @return true if successful, false otherwise
+     */
+    private boolean parse(Queue<String> tokens, Stack<String> operations) {
+        boolean isValid = true;
+        String curToken = tokens.peek();
+        String curOp = operations.pop();
+
+        // Convert the current token into n if it is a number
+        if (Pattern.matches("\\d+(\\.\\d+)?", curToken)) curToken = "n";
+
+        // Check if the operation requires removing the token from the string
+        if (Pattern.matches("n|\\p{Punct}", curOp)) {
+            if (curToken.equals(curOp)) {
+                tokens.poll();
+            } else {
+                isValid = false;
+            }
+        } else {
+            // Apply the rule in the table at (curOp, curToken) by adding it to the operations stack
+            try { // Prepare for null to be returned when getting from the parse table
+                int ruleNum = parseTable.get(curOp, curToken) - 1;  // -1 to start from 0
+                List<String> temp = grammar.getRule(ruleNum);
+                Collections.reverse(temp);                          // Reverse for correct stack order
+                operations.addAll(temp);                            // Add the production rule to the top of the stack
+                if (operations.peek().equals("λ")) operations.pop();
+            } catch (NullPointerException e) {
+                isValid = false;
+            }
+        }
+
+        return isValid;
     }
 }

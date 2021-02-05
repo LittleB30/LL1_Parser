@@ -31,7 +31,7 @@ public class Table {
     }
 
     /**
-     * Adds the value into the table at (row, column).
+     * Adds a value into the table at (row, column).
      * @param row 
      * @param col
      * @param value
